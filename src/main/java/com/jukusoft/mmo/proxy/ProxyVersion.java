@@ -5,7 +5,7 @@ public class ProxyVersion {
     public static final int CURRENT_BUILD_VERSION = 1;
 
     //array with all supported versions. if version is not supported, client will be rejected
-    public static final int[] ACCEPTED_CLIENT_VERSIONS = new int[]{1};
+    protected static final int[] ACCEPTED_CLIENT_VERSIONS = new int[]{1};
 
     /**
     * private constructor
