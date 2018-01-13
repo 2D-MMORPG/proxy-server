@@ -41,11 +41,8 @@ public class ServerMain {
         server.initSSL("./config/keystore.jks", "my-pass");
 
         //start server
-        server.startServer(2600, new Handler<NetSocket>() {
-            @Override
-            public void handle(NetSocket event) {
-                //
-            }
+        server.startServer(2600, event -> {
+            //
         });
 
         Logger.getAnonymousLogger().log(Level.INFO, "proxy server started.");
