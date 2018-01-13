@@ -4,7 +4,8 @@ import com.hazelcast.config.CacheSimpleConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.jukusoft.mmo.proxy.network.VertxServer;
+import com.jukusoft.mmo.proxy.network.VertxManager;
+import com.jukusoft.mmo.proxy.network.TCPServer;
 import io.vertx.core.Handler;
 import io.vertx.core.net.NetSocket;
 
@@ -28,8 +29,12 @@ public class ServerMain {
 
         HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 
+        //create and initialize new vertx instance
+        VertxManager vertxManager = new VertxManager();
+        vertxManager.init(hazelcastInstance);
+
         //create new server
-        VertxServer server = new VertxServer(hazelcastInstance);
+        TCPServer server = new TCPServer(vertxManager.getVertx());
 
         //start server
         server.startServer(2600, new Handler<NetSocket>() {

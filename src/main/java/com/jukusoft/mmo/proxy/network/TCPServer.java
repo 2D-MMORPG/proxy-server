@@ -4,6 +4,7 @@ import com.hazelcast.core.HazelcastInstance;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.NetServer;
 import io.vertx.core.net.NetServerOptions;
 import io.vertx.core.net.NetSocket;
@@ -13,10 +14,7 @@ import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class VertxServer {
-
-    //vert.x options
-    protected VertxOptions vertxOptions = null;
+public class TCPServer {
 
     //instance of vert.x
     protected Vertx vertx = null;
@@ -24,54 +22,47 @@ public class VertxServer {
     //vert.x network server
     protected NetServer netServer = null;
 
-    //vert.x cluster manager
-    protected ClusterManager clusterManager = null;
-
-    protected boolean initialized = false;
+    protected boolean sslActivated = false;
+    protected String keyStorePath = "";
+    protected String jksPassword = "";
 
     /**
     * default constructor
     */
-    public VertxServer (HazelcastInstance hazelcastInstance) {
-        //create new vert.x cluster manager
-        this.clusterManager = new HazelcastClusterManager(hazelcastInstance);
-
-        //create new vertx.io options
-        this.vertxOptions = new VertxOptions();
-
-        //use clustered mode of vert.x
-        this.vertxOptions.setClustered(true);
-
-        //set cluster manager
-        this.vertxOptions.setClusterManager(this.clusterManager);
-
-        //set high availability flag
-        this.vertxOptions.setHAEnabled(true);
-
-        //set number of threads to use in thread pools
-        //this.vertxOptions.setEventLoopPoolSize(this.eventLoopPoolSize);
-        //this.vertxOptions.setWorkerPoolSize(this.workerPoolSize);
-
-        //create clustered vertx. instance
-        Vertx.clusteredVertx(this.vertxOptions, res -> {
-            if (res.succeeded()) {
-                initialized = true;
-                this.vertx = res.result();
-            } else {
-                // failed!
-                System.exit(1);
-            }
-        });
-
-        //wait while clustered vertx is initialized
-        while (this.initialized == false) {
-            Thread.yield();
-        }
+    public TCPServer(Vertx vertx) {
+        this.vertx = vertx;
     }
 
+    /**
+    * initialize SSL
+     *
+     * @param jksPassword jks password
+    */
+    public void initSSL (String keyStorePath, String jksPassword) {
+        this.sslActivated = true;
+        this.keyStorePath = keyStorePath;
+        this.jksPassword = jksPassword;
+    }
+
+    /**
+    * start tcp server
+     *
+     * @param port port
+     * @param connectHandler connection handler
+    */
     public void startServer (int port, Handler<NetSocket> connectHandler) {
         //create options for TCP network server
         NetServerOptions netServerOptions = new NetServerOptions();
+
+        if (this.sslActivated) {
+            //activate SSL
+            netServerOptions.setSsl(true);
+            netServerOptions.setKeyStoreOptions(
+                    new JksOptions().
+                            setPath(this.keyStorePath).
+                            setPassword(this.jksPassword)
+            );
+        }
 
         //set port
         netServerOptions.setPort(port);
