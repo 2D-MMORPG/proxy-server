@@ -75,6 +75,9 @@ public class TCPServer {
         //set connect handler
         this.netServer.connectHandler(connectHandler);
 
+        //add exception handler
+        this.netServer.exceptionHandler(e -> Logger.getAnonymousLogger().log(Level.SEVERE, "Exception occurred in tcp connection: ", e));
+
         //start network server
         this.netServer.listen(res -> {
             if (res.succeeded()) {
