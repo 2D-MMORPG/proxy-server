@@ -36,6 +36,10 @@ public class ServerMain {
         //create new server
         TCPServer server = new TCPServer(vertxManager.getVertx());
 
+        //activate SSL
+        //TODO: remove test password later
+        server.initSSL("./config/keystore.jks", "my-pass");
+
         //start server
         server.startServer(2600, new Handler<NetSocket>() {
             @Override
