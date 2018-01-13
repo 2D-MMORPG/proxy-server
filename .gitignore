@@ -5,6 +5,9 @@
 !.gitignore
 !.travis.yml
 
+# Java Key Store (for SSL / TLS)
+*.jks
+
 ### Windows ###
 # Windows image file caches
 Thumbs.db
