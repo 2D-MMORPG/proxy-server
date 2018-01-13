@@ -55,6 +55,8 @@ public class TCPServer {
         NetServerOptions netServerOptions = new NetServerOptions();
 
         if (this.sslActivated) {
+            //https://github.com/leolux/vertx-ssl-handshake
+
             //activate SSL
             netServerOptions.setSsl(true);
             netServerOptions.setKeyStoreOptions(

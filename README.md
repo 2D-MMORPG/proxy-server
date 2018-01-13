@@ -17,3 +17,10 @@ Proxy Server for 2D MMORPG.
 ```bash
 keytool -genkey -keyalg RSA -alias selfsigned -keystore keystore.jks -storepass password -validity 360 -keysize 2048
 ```
+
+## Show SSL Debug
+
+VM Options:
+```bash
+-Djavax.net.debug=ssl
+```
