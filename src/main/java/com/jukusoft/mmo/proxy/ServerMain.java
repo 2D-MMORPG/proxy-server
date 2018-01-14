@@ -4,6 +4,8 @@ import com.hazelcast.config.CacheSimpleConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.jukusoft.mmo.proxy.database.Database;
+import com.jukusoft.mmo.proxy.database.MySQLDatabase;
 import com.jukusoft.mmo.proxy.handler.LoginHandler;
 import com.jukusoft.mmo.proxy.message.LoginRequestCodec;
 import com.jukusoft.mmo.proxy.message.LoginRequestMessage;
@@ -12,10 +14,13 @@ import com.jukusoft.mmo.proxy.network.VertxManager;
 import com.jukusoft.mmo.proxy.network.TCPServer;
 import com.jukusoft.mmo.proxy.network.gateway.TCPGateway;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ServerMain {
+
+    protected static boolean dbConnected = false;
 
     /**
     * main method
@@ -35,6 +40,31 @@ public class ServerMain {
         //create and initialize new vertx instance
         VertxManager vertxManager = new VertxManager();
         vertxManager.init(hazelcastInstance);
+
+        //open database connection
+        Database database = new MySQLDatabase(vertxManager.getVertx());
+
+        //connect to database asynchronous
+        try {
+            database.connect("./config/mysql.cfg", res1 -> {
+                if (!res1.succeeded()) {
+                    Logger.getAnonymousLogger().log(Level.SEVERE, "Couldnt connect to database: " + res1.cause());
+                    System.exit(1);
+                }
+
+                Logger.getAnonymousLogger().log(Level.INFO, "Connected to database successfully.");
+
+                dbConnected = true;
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        //wait while mysql client is connecting to mysql database
+        while (!dbConnected) {
+            Thread.currentThread().yield();
+        }
 
         //create new server
         TCPServer server = new TCPServer(vertxManager.getVertx());

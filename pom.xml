@@ -37,6 +37,9 @@
 		<!-- hazelcast version -->
 		<hazelcast.version>3.9.2</hazelcast.version>
 
+		<!-- mysql connector version -->
+		<mysql.connector.version>6.0.6</mysql.connector.version>
+
 		<!-- file encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -70,6 +73,27 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-hazelcast</artifactId>
 			<version>${vertx.version}</version>
+		</dependency>
+
+		<!-- vertx-sync -->
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-sync</artifactId>
+			<version>${vertx.version}</version>
+		</dependency>
+
+		<!-- jdbc client -->
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-jdbc-client</artifactId>
+			<version>${vertx.version}</version>
+		</dependency>
+
+		<!-- MySQL connector -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.connector.version}</version>
 		</dependency>
 
 		<!-- High Performance Primitive Collections for Java, https://github.com/carrotsearch/hppc -->
