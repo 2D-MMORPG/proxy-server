@@ -26,15 +26,14 @@ public class LoginRequestCodec implements MessageCodec<LoginRequestMessage> {
 
     @Override
     public LoginRequestMessage decodeFromWire(int pos, Buffer buffer, short version) {
-        int usernameLength = buffer.getInt(pos);
-        System.err.println("pos: " + pos + ", username length: " + usernameLength);
-        pos += 4;
+        int usernameLength = buffer.getShort(pos);
+        pos += 2;
         byte[] usernameBytes = buffer.getBytes(pos, pos + usernameLength);
 
         pos += usernameLength;
 
-        int passwordLength = buffer.getInt(pos);
-        pos += 4;
+        int passwordLength = buffer.getShort(pos);
+        pos += 2;
         byte[] passwordBytes = buffer.getBytes(pos, pos + passwordLength);
 
         String username = new String(usernameBytes, StandardCharsets.UTF_8);
