@@ -8,6 +8,9 @@
 # Java Key Store (for SSL / TLS)
 *.jks
 
+mysql.cfg
+*mysql.cfg
+
 ### Windows ###
 # Windows image file caches
 Thumbs.db
