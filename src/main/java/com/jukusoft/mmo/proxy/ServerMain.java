@@ -4,10 +4,10 @@ import com.hazelcast.config.CacheSimpleConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.jukusoft.mmo.proxy.network.SocketManager;
 import com.jukusoft.mmo.proxy.network.VertxManager;
 import com.jukusoft.mmo.proxy.network.TCPServer;
-import io.vertx.core.Handler;
-import io.vertx.core.net.NetSocket;
+import com.jukusoft.mmo.proxy.network.gateway.TCPGateway;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,10 +40,14 @@ public class ServerMain {
         //TODO: remove test password later
         server.initSSL("./config/keystore.jks", "my-pass");
 
+        //create new gateway
+        TCPGateway gateway = new TCPGateway();
+
+        //create new socket manager
+        SocketManager socketManager = new SocketManager(gateway);
+
         //start server
-        server.startServer(2600, event -> {
-            //
-        });
+        server.startServer(2600, socketManager);
 
         Logger.getAnonymousLogger().log(Level.INFO, "proxy server started.");
     }

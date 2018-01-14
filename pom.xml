@@ -72,6 +72,13 @@
 			<version>${vertx.version}</version>
 		</dependency>
 
+		<!-- High Performance Primitive Collections for Java, https://github.com/carrotsearch/hppc -->
+		<dependency>
+			<groupId>com.carrotsearch</groupId>
+			<artifactId>hppc</artifactId>
+			<version>${hppc.version}</version>
+		</dependency>
+
 		<!-- Vert.x Web -->
 		<dependency>
 			<groupId>io.vertx</groupId>
