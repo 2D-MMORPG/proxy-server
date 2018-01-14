@@ -6,6 +6,7 @@ import com.jukusoft.mmo.proxy.network.Connection;
 import com.jukusoft.mmo.proxy.network.message.Message;
 import com.jukusoft.mmo.proxy.network.codec.MessageCodec;
 import com.jukusoft.mmo.proxy.network.message.MessageReceiver;
+import com.jukusoft.mmo.proxy.utils.ByteUtils;
 import io.vertx.core.buffer.Buffer;
 
 import java.util.logging.Level;
@@ -63,6 +64,9 @@ public class TCPGateway {
     protected <T extends Message> T decodeBufferToMessage (Buffer buffer) {
         // My custom message starting from this *position* of buffer
         int _pos = 0;
+
+        //log message for debugging
+        Logger.getAnonymousLogger().log(Level.INFO, "received: " + ByteUtils.bytesToHex(buffer.getBytes()));
 
         // Length of JSON
         int length = buffer.getInt(_pos);

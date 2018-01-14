@@ -4,6 +4,8 @@ import com.hazelcast.config.CacheSimpleConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.jukusoft.mmo.proxy.message.LoginRequestCodec;
+import com.jukusoft.mmo.proxy.message.LoginRequestMessage;
 import com.jukusoft.mmo.proxy.network.SocketManager;
 import com.jukusoft.mmo.proxy.network.VertxManager;
 import com.jukusoft.mmo.proxy.network.TCPServer;
@@ -42,6 +44,9 @@ public class ServerMain {
 
         //create new gateway
         TCPGateway gateway = new TCPGateway();
+
+        //add codec
+        gateway.addCodec(new LoginRequestCodec(), LoginRequestMessage.class);
 
         //create new socket manager
         SocketManager socketManager = new SocketManager(gateway);
