@@ -10,6 +10,7 @@
 
 mysql.cfg
 *mysql.cfg
+config/mysql.cfg
 
 ### Windows ###
 # Windows image file caches
