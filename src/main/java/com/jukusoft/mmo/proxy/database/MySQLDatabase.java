@@ -129,7 +129,9 @@ public class MySQLDatabase implements Database {
     }
 
     public void getRow (String sql, Handler<AsyncResult<JsonObject>> handler) {
-        this.connection.query(sql, res -> {
+        String sql1 = sql.replace("{prefix}", this.getPrefix());
+
+        this.connection.query(sql1, res -> {
             if (!res.succeeded()) {
                 handler.handle(Future.failedFuture(res.cause()));
                 throw new IllegalStateException("Couldnt execute query to read row: " + sql);

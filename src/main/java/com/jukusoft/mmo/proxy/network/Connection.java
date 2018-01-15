@@ -18,8 +18,10 @@ public class Connection {
     //flag, if user has choose a character
     protected boolean characterChoosen = false;
 
+    protected NetSocket tcpSocket = null;
+
     public Connection (int connID, NetSocket socket, TCPGateway gateway) {
-        //
+        this.tcpSocket = socket;
     }
 
     public void onClose () {
@@ -39,4 +41,7 @@ public class Connection {
         return this.characterChoosen;
     }
 
+    public NetSocket getTcpSocket() {
+        return this.tcpSocket;
+    }
 }

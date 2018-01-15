@@ -2,6 +2,10 @@ package com.jukusoft.mmo.proxy.network.gateway;
 
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
+import com.hazelcast.core.HazelcastInstance;
+import com.jukusoft.mmo.proxy.database.Database;
+import com.jukusoft.mmo.proxy.database.InjectDatabase;
+import com.jukusoft.mmo.proxy.database.InjectHazelcast;
 import com.jukusoft.mmo.proxy.network.Connection;
 import com.jukusoft.mmo.proxy.network.message.Message;
 import com.jukusoft.mmo.proxy.network.codec.MessageCodec;
@@ -9,6 +13,7 @@ import com.jukusoft.mmo.proxy.network.message.MessageReceiver;
 import com.jukusoft.mmo.proxy.utils.ByteUtils;
 import io.vertx.core.buffer.Buffer;
 
+import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,11 +27,15 @@ public class TCPGateway {
     //map with all handlers
     protected IntObjectMap<MessageReceiver> receiverMap = new IntObjectHashMap<>();
 
+    protected Database database = null;
+    protected HazelcastInstance hazelcastInstance = null;
+
     /**
     * default constructor
     */
-    public TCPGateway() {
-        //
+    public TCPGateway (Database database, HazelcastInstance hazelcastInstance) {
+        this.database = database;
+        this.hazelcastInstance = hazelcastInstance;
     }
 
     /**
@@ -91,11 +100,61 @@ public class TCPGateway {
     }
 
     public <T extends Message> void addHandler (MessageReceiver<T> receiver, Class<? extends Message> msgType) {
+        //inject database
+        this.injectDatabase(receiver);
+
+        //inject hazelcast instance
+        this.injectHazelcast(receiver);
+
         this.receiverMap.put(msgType.getSimpleName().hashCode(), receiver);
     }
 
     public <T extends Message> void addCodec (MessageCodec<T> codec, Class<? extends Message> msgType) {
         this.codecMap.put(msgType.getSimpleName().hashCode(), codec);
+    }
+
+    protected void injectDatabase (Object target) {
+        //iterate through all fields in class
+        for (Field field : target.getClass().getDeclaredFields()) {
+            //get annotation
+            InjectDatabase annotation = field.getAnnotation(InjectDatabase.class);
+
+            if (annotation != null && Database.class.isAssignableFrom(field.getType())) {
+                //set field accessible, so we can change value
+                field.setAccessible(true);
+
+                //set value of field
+                try {
+                    field.set(target, this.database);
+                } catch (IllegalAccessException e) {
+                    Logger.getAnonymousLogger().log(Level.SEVERE, "IllegalAccessException while inject database: ", e);
+
+                    throw new IllegalStateException("Could not inject database for field '" + field.getName() + "' in class: " + target.getClass().getName());
+                }
+            }
+        }
+    }
+
+    protected void injectHazelcast (Object target) {
+        //iterate through all fields in class
+        for (Field field : target.getClass().getDeclaredFields()) {
+            //get annotation
+            InjectHazelcast annotation = field.getAnnotation(InjectHazelcast.class);
+
+            if (annotation != null && HazelcastInstance.class.isAssignableFrom(field.getType())) {
+                //set field accessible, so we can change value
+                field.setAccessible(true);
+
+                //set value of field
+                try {
+                    field.set(target, this.hazelcastInstance);
+                } catch (IllegalAccessException e) {
+                    Logger.getAnonymousLogger().log(Level.SEVERE, "IllegalAccessException while inject hazelcast: ", e);
+
+                    throw new IllegalStateException("Could not inject hazelcast for field '" + field.getName() + "' in class: " + target.getClass().getName());
+                }
+            }
+        }
     }
 
 }

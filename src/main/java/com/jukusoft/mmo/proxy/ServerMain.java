@@ -74,7 +74,7 @@ public class ServerMain {
         server.initSSL("./config/keystore.jks", "my-pass");
 
         //create new gateway
-        TCPGateway gateway = new TCPGateway();
+        TCPGateway gateway = new TCPGateway(database, hazelcastInstance);
 
         //add codec
         gateway.addCodec(new LoginRequestCodec(), LoginRequestMessage.class);

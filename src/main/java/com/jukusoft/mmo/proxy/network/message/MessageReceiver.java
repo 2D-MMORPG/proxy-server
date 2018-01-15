@@ -1,5 +1,7 @@
 package com.jukusoft.mmo.proxy.network.message;
 
+import com.jukusoft.mmo.proxy.network.Connection;
+
 public interface MessageReceiver<T> {
 
     /**
@@ -7,7 +9,7 @@ public interface MessageReceiver<T> {
      *
      * @param msg instance of message
     */
-    public void onReceive(T msg);
+    public void onReceive(T msg, Connection connection);
 
     /**
     * is login required to handle this message
