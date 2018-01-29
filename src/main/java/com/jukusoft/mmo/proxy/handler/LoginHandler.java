@@ -3,6 +3,7 @@ package com.jukusoft.mmo.proxy.handler;
 import com.jukusoft.mmo.proxy.database.Database;
 import com.jukusoft.mmo.proxy.database.InjectDatabase;
 import com.jukusoft.mmo.proxy.message.LoginRequestMessage;
+import com.jukusoft.mmo.proxy.message.LoginResponseMessage;
 import com.jukusoft.mmo.proxy.network.Connection;
 import com.jukusoft.mmo.proxy.network.message.MessageReceiver;
 import com.jukusoft.mmo.proxy.utils.HashUtils;
@@ -47,6 +48,8 @@ public class LoginHandler implements MessageReceiver<LoginRequestMessage> {
 
         String passwordHash = HashUtils.computeSHA256Hash(msg.getPassword(), salt);
 
+        LoginResponseMessage response = new LoginResponseMessage();
+
         if (expectedPasswordHash.equals(passwordHash)) {
             //login successful
 
@@ -76,6 +79,9 @@ public class LoginHandler implements MessageReceiver<LoginRequestMessage> {
 
             //TODO: send failed message
         }
+
+        //send message to client
+        connection.write(response);
     }
 
     @Override

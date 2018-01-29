@@ -67,7 +67,7 @@ public class TCPGateway {
             Logger.getAnonymousLogger().log(Level.INFO, "Choosen character is required to handle message '" + msg.getClass().getSimpleName() + "', but user hasnt choosen a character yet.");
         }
 
-        receiver.onReceive(msg);
+        receiver.onReceive(msg, conn);
     }
 
     protected <T extends Message> T decodeBufferToMessage (Buffer buffer) {
@@ -155,6 +155,14 @@ public class TCPGateway {
                 }
             }
         }
+    }
+
+    public <T extends Message> void send (T msg, Connection conn) {
+        //TODO: encode message to buffer
+
+        //TODO: send buffer to conn socket
+
+        throw new UnsupportedOperationException("method isnt implemented yet.");
     }
 
 }

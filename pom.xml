@@ -15,6 +15,8 @@
 		<!-- JUnit version -->
 		<junit.version>4.12</junit.version>
 
+		<network.shared.version>1.0.0-SNAPSHOT</network.shared.version>
+
 		<!-- logger version -->
 		<slf4j.version>1.7.25</slf4j.version>
 		<log4j.version>2.10.0</log4j.version>
@@ -45,6 +47,20 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<!-- JUnit tests -->
 		<dependency>
@@ -52,6 +68,13 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- shared network module -->
+		<dependency>
+			<groupId>com.jukusoft.mmo</groupId>
+			<artifactId>network-shared</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- vert.x -->

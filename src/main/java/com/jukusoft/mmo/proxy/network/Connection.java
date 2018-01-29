@@ -1,6 +1,7 @@
 package com.jukusoft.mmo.proxy.network;
 
 import com.jukusoft.mmo.proxy.network.gateway.TCPGateway;
+import com.jukusoft.mmo.proxy.network.message.Message;
 import io.vertx.core.net.NetSocket;
 
 /**
@@ -18,10 +19,14 @@ public class Connection {
     //flag, if user has choose a character
     protected boolean characterChoosen = false;
 
+    protected int connID = 0;
     protected NetSocket tcpSocket = null;
+    protected TCPGateway gateway = null;
 
     public Connection (int connID, NetSocket socket, TCPGateway gateway) {
+        this.connID = connID;
         this.tcpSocket = socket;
+        this.gateway = gateway;
     }
 
     public void onClose () {
@@ -44,4 +49,9 @@ public class Connection {
     public NetSocket getTcpSocket() {
         return this.tcpSocket;
     }
+
+    public <T extends Message> void write (T msg) {
+        this.gateway.send(msg, this);
+    }
+
 }
